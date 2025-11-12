@@ -80,13 +80,15 @@ const Dashboard: React.FC<DashboardProps> = ({ user, mealLogs, addMealItem, sele
         setIsLoading(true);
         setError(null);
         try {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = async () => {
-                const base64String = (reader.result as string).split(',')[1];
-                const mealData = await analyzeFoodLabel(base64String, file.type);
-                addMealItem(selectedDate, selectedCategory, mealData);
-            };
+            const base64String = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve((reader.result as string).split(',')[1]);
+                reader.onerror = (error) => reject(error);
+            });
+
+            const mealData = await analyzeFoodLabel(base64String, file.type);
+            addMealItem(selectedDate, selectedCategory, mealData);
         } catch (err: any) {
             setError(err.message || "An unexpected error occurred.");
         } finally {
