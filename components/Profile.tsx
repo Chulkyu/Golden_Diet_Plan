@@ -3,17 +3,18 @@ import { UserProfile, ActivityLevel, WeightGoal } from '../types';
 import { calculateTargetCalories } from '../utils/helpers';
 
 interface ProfileProps {
+  userProfile: UserProfile | null;
   onProfileSave: (profile: UserProfile) => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ onProfileSave }) => {
+const Profile: React.FC<ProfileProps> = ({ userProfile, onProfileSave }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    height: '',
-    weight: '',
-    activityLevel: ActivityLevel.LightlyActive,
-    weightGoal: WeightGoal.Maintain,
+    name: userProfile?.name || '',
+    age: userProfile?.age?.toString() || '',
+    height: userProfile?.height?.toString() || '',
+    weight: userProfile?.weight?.toString() || '',
+    activityLevel: userProfile?.activityLevel || ActivityLevel.LightlyActive,
+    weightGoal: userProfile?.weightGoal || WeightGoal.Maintain,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -40,8 +41,8 @@ const Profile: React.FC<ProfileProps> = ({ onProfileSave }) => {
   return (
     <div className="min-h-screen bg-brand-gray-900 text-white flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md mx-auto bg-brand-gray-800 rounded-2xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-2 text-brand-gold-400">Golden Plate</h1>
-        <p className="text-center text-gray-300 mb-8">Create your profile to get started.</p>
+        <h1 className="text-3xl font-bold text-center mb-2 text-brand-gold-400">FELFEL Diet Plan</h1>
+        <p className="text-center text-gray-300 mb-8">{userProfile ? 'Update your profile.' : 'Create your profile to get started.'}</p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 bg-brand-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-gold-500" />
           <div className="grid grid-cols-2 gap-4">

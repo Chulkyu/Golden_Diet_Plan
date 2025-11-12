@@ -69,7 +69,7 @@ const App: React.FC = () => {
     
     const renderPage = () => {
         if (!userProfile || currentPage === 'profile') {
-            return <Profile onProfileSave={handleProfileSave} />;
+            return <Profile userProfile={userProfile} onProfileSave={handleProfileSave} />;
         }
         
         switch (currentPage) {
