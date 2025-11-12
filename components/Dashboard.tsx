@@ -11,7 +11,7 @@ const NutrientDisplay: React.FC<{ label: string; value: number; unit: string; cl
   </div>
 );
 
-const MealAccordion: React.FC<{ title: MealCategory; items: MealItem[]; totals: Nutrients }> = ({ title, items, totals }) => {
+const MealAccordion: React.FC<{ title: MealCategory; items: MealItem[]; totals: Nutrients; onDeleteItem: (itemId: string) => void; }> = ({ title, items, totals, onDeleteItem }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const foodTypeIcons: Record<FoodType, string> = {
@@ -35,8 +35,18 @@ const MealAccordion: React.FC<{ title: MealCategory; items: MealItem[]; totals: 
           {items.length > 0 ? items.map(item => (
             <div key={item.id} className="mb-2 p-2 rounded-lg bg-brand-gray-700">
                 <div className="flex justify-between items-center">
-                    <p className="font-semibold text-white">{item.name} <span title={item.type}>{foodTypeIcons[item.type]}</span></p>
-                    <p className="font-semibold text-brand-gold-400">{item.calories.toFixed(1)} kcal</p>
+                    <p className="font-semibold text-white">{item.name} <span title={item.type}>{foodTypeIcons[item.type]} ({item.type})</span></p>
+                     <div className="flex items-center space-x-3">
+                        <p className="font-semibold text-brand-gold-400">{item.calories.toFixed(1)} kcal</p>
+                        <button 
+                            onClick={() => onDeleteItem(item.id)}
+                            className="text-red-500 hover:text-red-400 text-2xl leading-none font-bold"
+                            aria-label={`Delete ${item.name}`}
+                            title={`Delete ${item.name}`}
+                        >
+                           &times;
+                        </button>
+                    </div>
                 </div>
                  <p className="text-xs text-gray-400">P {item.protein.toFixed(1)}g · C {item.carbs.toFixed(1)}g · F {item.fat.toFixed(1)}g · S {item.sugar.toFixed(1)}g</p>
             </div>
@@ -52,11 +62,12 @@ interface DashboardProps {
   user: UserProfile;
   mealLogs: MealLogs;
   addMealItem: (date: string, category: MealCategory, item: Omit<MealItem, 'id'>) => void;
+  deleteMealItem: (date: string, category: MealCategory, itemId: string) => void;
   selectedDate: string;
   setSelectedDate: (date: string) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ user, mealLogs, addMealItem, selectedDate, setSelectedDate }) => {
+const Dashboard: React.FC<DashboardProps> = ({ user, mealLogs, addMealItem, deleteMealItem, selectedDate, setSelectedDate }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<MealCategory>(MealCategory.Breakfast);
@@ -147,6 +158,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, mealLogs, addMealItem, sele
                         title={cat}
                         items={mealLogs[selectedDate]?.[cat] || []}
                         totals={sumNutrientsForCategory(mealLogs, selectedDate, cat)}
+                        onDeleteItem={(itemId) => deleteMealItem(selectedDate, cat, itemId)}
                     />
                 ))}
             </div>

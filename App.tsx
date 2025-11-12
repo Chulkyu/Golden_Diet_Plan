@@ -66,6 +66,32 @@ const App: React.FC = () => {
             };
         });
     };
+
+    const deleteMealItem = (date: string, category: MealCategory, itemId: string) => {
+        setMealLogs(prevLogs => {
+            const updatedLogs = { ...prevLogs };
+            if (!updatedLogs[date]?.[category]) {
+                return prevLogs; // No change if date or category doesn't exist
+            }
+            
+            const updatedDayLog = { ...updatedLogs[date] };
+            const updatedCategoryItems = updatedDayLog[category]?.filter(item => item.id !== itemId);
+
+            if (updatedCategoryItems && updatedCategoryItems.length > 0) {
+                updatedDayLog[category] = updatedCategoryItems;
+            } else {
+                delete updatedDayLog[category];
+            }
+
+            if (Object.keys(updatedDayLog).length > 0) {
+                updatedLogs[date] = updatedDayLog;
+            } else {
+                delete updatedLogs[date];
+            }
+
+            return updatedLogs;
+        });
+    };
     
     const renderPage = () => {
         if (!userProfile || currentPage === 'profile') {
@@ -81,6 +107,7 @@ const App: React.FC = () => {
                             user={userProfile} 
                             mealLogs={mealLogs} 
                             addMealItem={addMealItem}
+                            deleteMealItem={deleteMealItem}
                             selectedDate={selectedDate}
                             setSelectedDate={setSelectedDate} 
                         />;
