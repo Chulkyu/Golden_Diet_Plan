@@ -1,0 +1,7 @@
+{
+  "name": "Golden Plate Diet Tracker",
+  "description": "A sophisticated diet management app that tracks your nutritional intake by scanning food labels, helping you achieve your weight goals with personalized targets and motivational support. All in a luxurious dark and gold theme.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
