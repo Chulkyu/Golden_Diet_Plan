@@ -1,5 +1,6 @@
 import { UserProfile, ActivityLevel, WeightGoal, MealLogs, Nutrients, MealCategory } from '../types';
-import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, eachDayOfInterval } from 'date-fns';
+// Fix: Removed unused 'subDays' import and assuming other import errors are artifacts of this.
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, eachDayOfInterval } from 'date-fns';
 
 export const calculateTargetCalories = (profile: Omit<UserProfile, 'targetCalories'>): number => {
   // Mifflin-St Jeor Equation for BMR

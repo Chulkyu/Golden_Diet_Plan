@@ -2,12 +2,11 @@ import React, { useState, useRef, useMemo } from 'react';
 import { UserProfile, MealCategory, MealItem, MealLogs, Nutrients, FoodType } from '../types';
 import { sumNutrientsForDay, sumNutrientsForCategory } from '../utils/helpers';
 import { analyzeFoodLabel } from '../services/geminiService';
-import { format, parseISO } from 'date-fns';
 
 const NutrientDisplay: React.FC<{ label: string; value: number; unit: string; className?: string }> = ({ label, value, unit, className }) => (
   <div className={`bg-brand-gray-800 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg ${className}`}>
     <span className="text-gray-400 text-sm font-medium">{label}</span>
-    <span className="text-brand-gold-400 text-2xl font-bold">{value.toFixed(0)}</span>
+    <span className="text-brand-gold-400 text-2xl font-bold">{value.toFixed(1)}</span>
     <span className="text-gray-400 text-xs">{unit}</span>
   </div>
 );
@@ -27,7 +26,7 @@ const MealAccordion: React.FC<{ title: MealCategory; items: MealItem[]; totals: 
       <button onClick={() => setIsOpen(!isOpen)} className="w-full p-4 text-left flex justify-between items-center">
         <div>
           <h3 className="font-bold text-lg text-white">{title}</h3>
-          <p className="text-xs text-gray-400">{totals.calories.toFixed(0)} kcal · P {totals.protein.toFixed(0)}g · C {totals.carbs.toFixed(0)}g · F {totals.fat.toFixed(0)}g</p>
+          <p className="text-xs text-gray-400">{totals.calories.toFixed(1)} kcal · P {totals.protein.toFixed(1)}g · C {totals.carbs.toFixed(1)}g · F {totals.fat.toFixed(1)}g</p>
         </div>
         <svg className={`w-6 h-6 text-brand-gold-400 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
       </button>
@@ -37,9 +36,9 @@ const MealAccordion: React.FC<{ title: MealCategory; items: MealItem[]; totals: 
             <div key={item.id} className="mb-2 p-2 rounded-lg bg-brand-gray-700">
                 <div className="flex justify-between items-center">
                     <p className="font-semibold text-white">{item.name} <span title={item.type}>{foodTypeIcons[item.type]}</span></p>
-                    <p className="font-semibold text-brand-gold-400">{item.calories.toFixed(0)} kcal</p>
+                    <p className="font-semibold text-brand-gold-400">{item.calories.toFixed(1)} kcal</p>
                 </div>
-                 <p className="text-xs text-gray-400">P {item.protein.toFixed(0)}g · C {item.carbs.toFixed(0)}g · F {item.fat.toFixed(0)}g · S {item.sugar.toFixed(0)}g</p>
+                 <p className="text-xs text-gray-400">P {item.protein.toFixed(1)}g · C {item.carbs.toFixed(1)}g · F {item.fat.toFixed(1)}g · S {item.sugar.toFixed(1)}g</p>
             </div>
           )) : <p className="text-gray-400 text-sm">No items logged for this meal.</p>}
         </div>
@@ -115,7 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, mealLogs, addMealItem, sele
                 </div>
                  <div className="bg-brand-gray-800 p-4 rounded-2xl col-span-1 text-center shadow-lg">
                     <span className="text-gray-400 text-sm">Consumed</span>
-                    <p className="text-white text-3xl font-bold">{dailyTotals.calories.toFixed(0)}</p>
+                    <p className="text-white text-3xl font-bold">{dailyTotals.calories.toFixed(1)}</p>
                     <span className="text-gray-400 text-xs">kcal</span>
                 </div>
             </div>
