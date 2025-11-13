@@ -7,6 +7,14 @@ interface ProfileProps {
   onProfileSave: (profile: UserProfile) => void;
 }
 
+const activityLevels = [
+    { value: ActivityLevel.Sedentary, label: 'Sedentary', description: 'Little or no exercise' },
+    { value: ActivityLevel.LightlyActive, label: 'Lightly Active', description: 'Light exercise/sports 1-3 days/week' },
+    { value: ActivityLevel.ModeratelyActive, label: 'Moderately Active', description: 'Moderate exercise/sports 3-5 days/week' },
+    { value: ActivityLevel.VeryActive, label: 'Very Active', description: 'Hard exercise/sports 6-7 days a week' },
+    { value: ActivityLevel.ExtraActive, label: 'Extra Active', description: 'Very hard exercise/sports & physical job' },
+];
+
 const Profile: React.FC<ProfileProps> = ({ userProfile, onProfileSave }) => {
   const [formData, setFormData] = useState({
     name: userProfile?.name || '',
@@ -54,11 +62,11 @@ const Profile: React.FC<ProfileProps> = ({ userProfile, onProfileSave }) => {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">Activity Level</label>
             <select name="activityLevel" value={formData.activityLevel} onChange={handleChange} className="w-full px-4 py-3 bg-brand-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-gold-500">
-              <option value={ActivityLevel.Sedentary}>Sedentary</option>
-              <option value={ActivityLevel.LightlyActive}>Lightly Active</option>
-              <option value={ActivityLevel.ModeratelyActive}>Moderately Active</option>
-              <option value={ActivityLevel.VeryActive}>Very Active</option>
-              <option value={ActivityLevel.ExtraActive}>Extra Active</option>
+              {activityLevels.map(level => (
+                <option key={level.value} value={level.value}>
+                  {level.label} ({level.description})
+                </option>
+              ))}
             </select>
           </div>
 

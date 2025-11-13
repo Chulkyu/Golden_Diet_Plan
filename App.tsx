@@ -69,27 +69,39 @@ const App: React.FC = () => {
 
     const deleteMealItem = (date: string, category: MealCategory, itemId: string) => {
         setMealLogs(prevLogs => {
-            const updatedLogs = { ...prevLogs };
-            if (!updatedLogs[date]?.[category]) {
-                return prevLogs; // No change if date or category doesn't exist
+            // Return original logs if the item's location doesn't exist.
+            if (!prevLogs[date]?.[category]) {
+                return prevLogs;
+            }
+    
+            // Create a new copy of the meal logs for immutability.
+            const newLogs = { ...prevLogs };
+            
+            // Create a new copy of the specific day's log.
+            const newDayLog = { ...newLogs[date] };
+    
+            // Filter the items in the specific category to remove the one with the matching ID.
+            const newCategoryItems = (newDayLog[category] || []).filter(item => item.id !== itemId);
+            
+            // If the category is now empty after deletion, remove the category itself.
+            if (newCategoryItems.length === 0) {
+                delete newDayLog[category];
+            } else {
+                // Otherwise, update the category with the new, filtered list.
+                newDayLog[category] = newCategoryItems;
             }
             
-            const updatedDayLog = { ...updatedLogs[date] };
-            const updatedCategoryItems = updatedDayLog[category]?.filter(item => item.id !== itemId);
-
-            if (updatedCategoryItems && updatedCategoryItems.length > 0) {
-                updatedDayLog[category] = updatedCategoryItems;
+            // If the day's log is now empty, remove the entire day from the logs.
+            if (Object.keys(newDayLog).length === 0) {
+                delete newLogs[date];
             } else {
-                delete updatedDayLog[category];
+                // Otherwise, update the day in the main log.
+                newLogs[date] = newDayLog;
             }
-
-            if (Object.keys(updatedDayLog).length > 0) {
-                updatedLogs[date] = updatedDayLog;
-            } else {
-                delete updatedLogs[date];
-            }
-
-            return updatedLogs;
+    
+            // Return the new state object. This guaranteed immutable update will trigger
+            // a re-render and cause the daily totals on the dashboard to be recalculated correctly.
+            return newLogs;
         });
     };
     
